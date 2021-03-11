@@ -1,0 +1,123 @@
+class App extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+  render () {
+    let style = {
+      "fontFamily": "Arial"
+    }
+    return (
+      <div style={style}>
+        <p>Hello World, here is a list:</p>
+        <List items=""/>
+        <p>Here is a box lol</p>
+        <Container bordercolor="red"/>
+      </div>
+    );
+  }
+}
+
+class List extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {...props};
+  }
+  render () {
+    let style = {
+      
+    };
+    let i = this.state.items.split(',');
+    if(!i[0]) return (
+      <small>!! Warning: Empty list!</small>
+    );
+    let a = new Array();
+    i.forEach(function(item) {
+      if(item)
+        a.push(
+          <Item style={style} idx={a.length + 1} data={item}/>
+        );
+    });
+    return (
+      <ul>
+        {a}
+      </ul>
+    );
+  }
+  componentDidMount () {
+    console.log(this);
+    let i = 0;
+    let s = "Hello, World, React, Is, Incredible, Everybody, Should, Try, It".split(',');
+    let int = setInterval (() => {
+      this.setState({items: this.state.items + s[i++] + ','});
+      if (i === s.length)
+        clearInterval(int);
+    }, 1000);
+  }
+}
+
+class Item extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+  render () {
+    let style = {
+      "color": "#33F",
+      "font-style": "italic",
+      "overflow": "hidden",
+      "animationName": "poptext",
+      "animationDuration": "600ms",
+      "animationTimingFunction": "ease-out"
+    };
+    return (
+      <li style={style}><b>Item #{this.props.idx}</b> - {this.props.data}</li>
+    );
+  }
+}
+
+class Container extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {...props};
+    this.state.initialClass = "";
+  }
+  render () {
+    let divStyle = {
+      "display": "inline-block",
+      "height": "200px",
+      "width": "200px",
+      "border": "5px solid " + this.state.bordercolor,
+      "transition": "100ms",
+      "borderRadius": "10px",
+      "textAlign": "center",
+    }; let spanStyle = {
+      "position": "relative",
+      "top": "45%",
+      "cursor": "default"
+    };
+    return (
+      <div className={this.state.class} style={divStyle} onClick={this.rotate.bind(this)}>
+        <span style={spanStyle}>Click me!</span>
+      </div>
+    );
+  }
+  componentDidMount () {
+    let int = setInterval(() => {
+      let R = Math.floor(Math.random() * 256).toString(16);
+      let G = Math.floor(Math.random() * 256).toString(16);
+      let B = Math.floor(Math.random() * 256).toString(16);
+      this.setState({bordercolor: '#' + R + G + B}); //p
+    },100);
+  }
+  rotate () {
+    if(this.state.rotating) return 0;
+    this.state.rotating = 1;
+    this.setState({class: this.state.class + ' anim-rotate'}, () => {
+      setTimeout(() => {
+        this.setState({class: this.state.initialClass});
+        this.state.rotating = 0;
+      },1050);
+    });
+  }
+}
+
+ReactDOM.render(<App/>, document.getElementById('x'));
